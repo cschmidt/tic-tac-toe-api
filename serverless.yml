@@ -7,8 +7,11 @@ provider:
   region: us-west-2
 
 functions:
-  app:
-    handler: src/index.handler
+  sessions:
+    handler: src/sessions.handler
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http: 'POST /sessions'
+  commands:
+    handler: src/commands.handler
+    events:
+      - http: 'POST /commands'
