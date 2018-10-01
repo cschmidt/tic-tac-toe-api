@@ -1,7 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 #serverless working files
-/.serverless
+/*.serverless
 
 # dependencies
 /node_modules
