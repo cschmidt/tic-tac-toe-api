@@ -11,13 +11,16 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
-    "serverless-http": "^1.6.0"
+    "serverless-http": "^1.6.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "^23.6.0",
     "jest-run": "^1.0.0"
   },
   "jest": {
-    "testMatch": ["**/test/**/*.js?(x)"]
+    "testMatch": [
+      "**/test/**/*.js?(x)"
+    ]
   }
 }
