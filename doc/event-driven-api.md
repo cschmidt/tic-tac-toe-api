@@ -106,3 +106,6 @@ http://eventedapi.org/spec/
 This project doesn't seem to be dead (it's an API specification at Version 1
 that hasn't been updated since 2011). Seems the company behind it (Kynetx) is
 also dead.
+
+## Designing Events-First Microservices
+https://www.infoq.com/presentations/microservices-events-first-design
