@@ -6,7 +6,7 @@ const sqs = require('aws-sdk/clients/sqs')
 const s3 = require('aws-sdk/clients/s3')
 const sessions = express()
 
-sessions.get('*', function(req, res) {
+sessions.post('*', function(req, res) {
   let session_id = uuid()
   let session = {
     session_id,
