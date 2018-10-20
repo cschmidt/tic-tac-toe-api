@@ -14,6 +14,7 @@ sessions.post('*', function(req, res) {
   }
   let params = {
     ACL: 'authenticated-read',
+    // FIXME: don't hard-code bucket name!
     Bucket: 'tic-tac-toe-api-dev',
     Key: `sessions/${session_id}`,
     Body: JSON.stringify(session)
