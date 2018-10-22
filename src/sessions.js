@@ -6,26 +6,46 @@ const sqs = require('aws-sdk/clients/sqs')
 const s3 = require('aws-sdk/clients/s3')
 const sessions = express()
 
-sessions.post('*', function(req, res) {
-  let session_id = uuid()
-  let session = {
-    session_id,
-    queue_url: '[queue_url]'
-  }
-  let params = {
+
+function createSessionFile(session) {
+  let sessionFile = {
     ACL: 'authenticated-read',
     // FIXME: don't hard-code bucket name!
     Bucket: 'tic-tac-toe-api-dev',
-    Key: `sessions/${session_id}`,
+    Key: `sessions/${session.sessionId}`,
     Body: JSON.stringify(session)
   }
   let s3Client = new s3()
-  s3Client.putObject(params).promise().then(data => {
+  return s3Client.putObject(sessionFile).promise()
+}
+
+
+function createSessionQueue(session) {
+  let sqsClient = new sqs()
+  let sessionQueueInfo = {
+    QueueName: `tic-tac-toe-api-dev-${session.sessionId}`,
+    Attributes: {
+      ReceiveMessageWaitTimeSeconds: '20'
+    }
+  }
+  return sqsClient.createQueue(sessionQueueInfo).promise()
+}
+
+
+sessions.post('*', (req, res) => {
+  let sessionId = uuid()
+  let session = {
+    sessionId,
+    queueUrl: ''
+  }
+  createSessionFile(session).then(() => {
+    return createSessionQueue(session)
+  }).then(data => {
+    session.queueUrl = data.QueueUrl
     res.json(session)
-    // console.log('req', req)
   }).catch(err => {
-    res.json({ 'error': err })
-    console.log('err', err)
+    res.status(500).send('Error')
+    console.log('req', req, 'err', err)
   })
 })
 
