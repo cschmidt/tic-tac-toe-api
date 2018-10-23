@@ -1,0 +1,39 @@
+@startuml
+
+
+[commands] <<API Endpoint>> as commands
+[command_submitted_topic] <<SNS Topic>> as command_submitted
+
+commands -> command_submitted
+
+[command_log_queue] <<SQS Queue>> as command_log
+command_submitted --> command_log
+
+[command_history] <<S3 Bucket>> as command_history
+command_log --> command_history
+
+[command_dispatch_queue] <<SQS Queue>> as command_dispatch
+command_submitted --> command_dispatch
+
+[command_handler] <<Lambda Function>> as handler
+command_dispatch --> handler
+
+[events_topic] <<SNS Topic>> as events
+handler --> events
+
+[state] <<?>> as state
+handler --> state
+
+[session_queue] <<SQS Queue>> as session_queue
+
+
+[session_events_handler] <<Lambda Function>> as session_events_handler
+session_events_handler -> session_queue
+
+events -> session_events_handler
+
+
+browser -> commands
+
+
+@enduml
