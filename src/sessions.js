@@ -8,10 +8,12 @@ const sessions = express()
 
 
 function createSessionFile(session) {
+  if (!process.env.BUCKET) {
+    throw new Error('Service not configured')
+  }
   let sessionFile = {
     ACL: 'authenticated-read',
-    // FIXME: don't hard-code bucket name!
-    Bucket: 'tic-tac-toe-api-dev',
+    Bucket: process.env.BUCKET,
     Key: `sessions/${session.sessionId}`,
     Body: JSON.stringify(session)
   }
@@ -22,6 +24,7 @@ function createSessionFile(session) {
 
 function createSessionQueue(session) {
   let sqsClient = new sqs()
+  // FIXME: don't hard-code queue prefix
   let sessionQueueInfo = {
     QueueName: `tic-tac-toe-api-dev-${session.sessionId}`,
     Attributes: {
