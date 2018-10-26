@@ -8,12 +8,12 @@ const sessions = express()
 
 
 function createSessionFile(session) {
-  if (!process.env.BUCKET) {
+  if (!process.env.RESOURCE_PREFIX) {
     throw new Error('Service not configured')
   }
   let sessionFile = {
     ACL: 'authenticated-read',
-    Bucket: process.env.BUCKET,
+    Bucket: process.env.RESOURCE_PREFIX,
     Key: `sessions/${session.sessionId}`,
     Body: JSON.stringify(session)
   }

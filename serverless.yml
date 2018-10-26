@@ -19,20 +19,18 @@ provider:
    - Effect: "Allow"
      Action: "sns:Publish"
      Resource: "arn:aws:sns:*:*:*"
+  environment:
+    RESOURCE_PREFIX: ${self:custom.resourcePrefix}
 
 functions:
   sample:
     handler: src/sample-function.handler
     events:
       - http: 'GET /sample'
-    environment:
-      BUCKET: ${self:custom.resourcePrefix}
   sessions:
     handler: src/sessions.handler
     events:
       - http: 'POST /sessions'
-    environment:
-      BUCKET: ${self:custom.resourcePrefix}
   commands:
     handler: src/commands.handler
     events:
@@ -49,6 +47,10 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${self:custom.resourcePrefix}-incoming-commands
+        Subscription:
+        - Endpoint:
+            "Fn::GetAtt": [ CommandDispatchQueue, Arn ]
+          Protocol: sqs
     EventsTopic:
       Type: AWS::SNS::Topic
       Properties:

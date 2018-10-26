@@ -4,7 +4,7 @@ const express = require('express')
 const commands = express()
 
 commands.post('*', function(req, res) {
-  res.send('commands!')
+  // submit the incoming command to the incoming commands topic
 })
 
 module.exports.handler = serverless(commands)
