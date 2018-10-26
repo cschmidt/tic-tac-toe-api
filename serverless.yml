@@ -1,5 +1,8 @@
 service: tic-tac-toe-api
 
+custom:
+  resourcePrefix: ${self:service}-${self:provider.stage}
+
 provider:
   name: aws
   runtime: nodejs8.10
@@ -8,11 +11,14 @@ provider:
   iamRoleStatements:
    - Effect: "Allow"
      Action: "s3:*"
-     Resource: "arn:aws:s3:::${self:service}-${self:provider.stage}/*"
+     Resource: "arn:aws:s3:::${self:custom.resourcePrefix}/*"
    - Effect: "Allow"
      Action: "sqs:createQueue"
      # allow the service to create queues with names like "tic-tac-toe-api-dev*"
-     Resource: "arn:aws:sqs:*:*:${self:service}-${self:provider.stage}*"
+     Resource: "arn:aws:sqs:*:*:${self:custom.resourcePrefix}*"
+   - Effect: "Allow"
+     Action: "sns:Publish"
+     Resource: "arn:aws:sns:*:*:*"
 
 functions:
   sample:
@@ -20,13 +26,13 @@ functions:
     events:
       - http: 'GET /sample'
     environment:
-      BUCKET: ${self:service}-${self:provider.stage}
+      BUCKET: ${self:custom.resourcePrefix}
   sessions:
     handler: src/sessions.handler
     events:
       - http: 'POST /sessions'
     environment:
-      BUCKET: ${self:service}-${self:provider.stage}
+      BUCKET: ${self:custom.resourcePrefix}
   commands:
     handler: src/commands.handler
     events:
@@ -38,9 +44,17 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         AccessControl: Private
-        BucketName:
-          Fn::Join:
-            - ""
-            - - ${self:service}
-              - "-"
-              - ${self:provider.stage}
+        BucketName: ${self:custom.resourcePrefix}
+    IncomingCommandsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:custom.resourcePrefix}-incoming-commands
+    EventsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:custom.resourcePrefix}-events
+    CommandDispatchQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.resourcePrefix}-command-dispatch
+        ReceiveMessageWaitTimeSeconds: 20
