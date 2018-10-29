@@ -39,6 +39,13 @@ functions:
     handler: src/command-receiver.handler
     events:
       - http: 'POST /commands'
+  CommandProcessor:
+    handler: src/command-processor.handler
+    events:
+      - sqs:
+         arn:
+           "Fn::GetAtt": [ CommandDispatchQueue, Arn ]
+
 
 resources:
   Resources:
