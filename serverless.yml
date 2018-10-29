@@ -13,14 +13,21 @@ provider:
      Action: "s3:*"
      Resource: "arn:aws:s3:::${self:custom.resourcePrefix}/*"
    - Effect: "Allow"
-     Action: "sqs:createQueue"
+     Action: "sqs:CreateQueue"
      # allow the service to create queues with names like "tic-tac-toe-api-dev*"
      Resource: "arn:aws:sqs:*:*:${self:custom.resourcePrefix}*"
    - Effect: "Allow"
      Action: "sns:Publish"
      Resource: "arn:aws:sns:*:*:*"
+   - Effect: "Allow"
+     Action: "sqs:SendMessage"
+     Resource: "arn:aws:sqs:*:*:*"
   environment:
     RESOURCE_PREFIX: ${self:custom.resourcePrefix}
+    INCOMING_COMMANDS_TOPIC_ARN:
+      Ref: IncomingCommandsTopic
+    EVENTS_TOPIC_ARN:
+      Ref: EventsTopic
 
 functions:
   sample:
@@ -60,3 +67,26 @@ resources:
       Properties:
         QueueName: ${self:custom.resourcePrefix}-command-dispatch
         ReceiveMessageWaitTimeSeconds: 20
+    # See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/quickref-iam.html#scenario-sqs-policy
+    # and https://github.com/neillturner/cfndsl_examples/blob/master/IAM/IAM_Policies_SNS_Publish_To_SQS.yml
+    CommandDispatchQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+        - Ref: CommandDispatchQueue
+        PolicyDocument:
+          Id: CommandDispatchQueuePolicy
+          Version: '2012-10-17'
+          Statement:
+          - Sid: Allow-IncomingCommandsTopic-Send-To-CommandDispatchQueue
+            Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+            - sqs:SendMessage
+            Resource:
+              "Fn::GetAtt": [CommandDispatchQueue, Arn]
+            Condition:
+              ArnEquals:
+                aws:SourceArn:
+                  Ref: IncomingCommandsTopic

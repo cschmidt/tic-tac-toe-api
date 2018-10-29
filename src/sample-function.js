@@ -7,10 +7,10 @@ const sample = express()
 sample.get('*', (req, res) => {
   if (!process.env.RESOURCE_PREFIX) {
     res.status(500, 'Service not configured')
-    console.log('Must set BUCKET environment variable to the S3 bucket name')
+    console.log('Must set RESOURCE_PREFIX environment variable to the S3 bucket name')
   }
   else {
-    res.json({ hi: 'there', bucket: process.env.RESOURCE_PREFIX })
+    res.json({ bucket: process.env.RESOURCE_PREFIX })
   }
 })
 
