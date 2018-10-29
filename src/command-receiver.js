@@ -1,7 +1,7 @@
 'use strict'
 const serverless = require('serverless-http')
 const express = require('express')
-const commands = express()
+const commandReceiver = express()
 const sns = require('aws-sdk/clients/sns')
 const bodyParser = require('body-parser')
 
@@ -14,9 +14,9 @@ function submitCommand(command) {
   return snsClient.publish(messageParams).promise()
 }
 
-commands.use(bodyParser.json())
+commandReceiver.use(bodyParser.json())
 
-commands.post('*', function(req, res) {
+commandReceiver.post('*', function(req, res) {
   // FIXME: validate the command syntax, check session validity
   submitCommand(req.body).then(snsResponse => {
     res.json(snsResponse)
@@ -26,4 +26,4 @@ commands.post('*', function(req, res) {
   })
 })
 
-module.exports.handler = serverless(commands)
+module.exports.handler = serverless(commandReceiver)

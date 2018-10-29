@@ -27,16 +27,16 @@ provider:
       Ref: EventsTopic
 
 functions:
-  sample:
+  Sample:
     handler: src/sample-function.handler
     events:
       - http: 'GET /sample'
-  sessions:
+  Sessions:
     handler: src/sessions.handler
     events:
       - http: 'POST /sessions'
-  commands:
-    handler: src/commands.handler
+  CommandReceiver:
+    handler: src/command-receiver.handler
     events:
       - http: 'POST /commands'
 
