@@ -4,7 +4,7 @@ const sqs = require('aws-sdk/clients/sqs')
 const s3 = require('aws-sdk/clients/s3')
 
 
-export default class SessionManager {
+class SessionManager {
   constructor(systemName) {
     this.systemName = systemName
     this.sqsClient = new sqs()
@@ -13,9 +13,10 @@ export default class SessionManager {
 
   async createSession() {
     let sessionId = uuid()
-    let queueUrl = await this.createSessionQueue(sessionId).QueueUrl
-    let session = { sessionId, queueUrl }
-    return this.createSessionFile(session)
+    let queueResponse = await this.createSessionQueue(sessionId)
+    let session = { sessionId, queueUrl: queueResponse.QueueUrl }
+    await this.createSessionFile(session)
+    return session
   }
 
   async createSessionFile(session) {
@@ -46,3 +47,5 @@ export default class SessionManager {
     return this.s3Client.headObject(sessionFileParams).promise()
   }
 }
+
+module.exports = { SessionManager }

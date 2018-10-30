@@ -3,8 +3,15 @@ const serverless = require('serverless-http')
 const express = require('express')
 const commandReceiver = express()
 const sns = require('aws-sdk/clients/sns')
-const s3 = require('aws-sdk/clients/s3')
 const bodyParser = require('body-parser')
+const { SessionManager } = require('./session-manager')
+
+if (!process.env.RESOURCE_PREFIX) {
+  throw new Error('Service not configured')
+}
+
+let sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
+
 
 async function validateCommand(command) {
   // make sure there's a session id
@@ -12,19 +19,10 @@ async function validateCommand(command) {
     throw new Error(`Missing session_id in "${command}"`)
   }
   else {
-    let session_meta = await fetchSessionMeta(command.session_id)
+    await sessionManager.fetchSessionMeta(command.session_id)
   }
   // ultimately, ensure it conforms to a valid command
   return command
-}
-
-async function fetchSessionMeta(session_id) {
-  let s3Client = new s3()
-  let sessionFileParams = {
-    Bucket: process.env.RESOURCE_PREFIX,
-    Key: `sessions/${session_id}`
-  }
-  return s3Client.headObject(sessionFileParams).promise()
 }
 
 
