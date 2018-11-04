@@ -42,15 +42,15 @@ class SquareAlreadyMarkedError extends Error {
 class TicTacToe {
   constructor() {
     this.squares = {
-      a1: { mark: '', moveState: null },
-      a2: { mark: '', moveState: null },
-      a3: { mark: '', moveState: null },
-      b1: { mark: '', moveState: null },
-      b2: { mark: '', moveState: null },
-      b3: { mark: '', moveState: null },
-      c1: { mark: '', moveState: null },
-      c2: { mark: '', moveState: null },
-      c3: { mark: '', moveState: null }
+      a1: { mark: '' },
+      a2: { mark: '' },
+      a3: { mark: '' },
+      b1: { mark: '' },
+      b2: { mark: '' },
+      b3: { mark: '' },
+      c1: { mark: '' },
+      c2: { mark: '' },
+      c3: { mark: '' }
     }
     this.turn = players.X
     this.outcome = outcomes.UNKNOWN

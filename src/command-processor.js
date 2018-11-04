@@ -1,5 +1,6 @@
 'use strict'
 const sns = require('aws-sdk/clients/sns')
+const { TicTacToe } = require('./tic-tac-toe')
 
 function submitEvent(event) {
   let snsClient = new sns()
@@ -9,6 +10,18 @@ function submitEvent(event) {
   }
   return snsClient.publish(messageParams).promise()
 }
+
+const messageHandlers = {}
+messageHandlers.start_game = (message, events) => {
+  // create a game id and empty game
+  let ticTacToe = new TicTacToe()
+  // create a new game record in S3
+
+}
+
+messageHandlers.join_game = (message, events) => {}
+messageHandlers.make_move = (message, events) => {}
+
 
 
 module.exports.handler = async function(event, context) {
