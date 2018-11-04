@@ -1,11 +1,11 @@
 'use strict'
 
-export const players = {
+const players = {
   X: 'X',
   O: 'O'
 }
 
-export const outcomes = {
+const outcomes = {
   UNKNOWN: 'UNKNOWN',
   WIN: 'WIN',
   DRAW: 'DRAW'
@@ -26,20 +26,20 @@ const lines = [
 
 // Errors
 
-export class GameOverError extends Error {
+class GameOverError extends Error {
   constructor() {
     super('Game Over!')
   }
 }
 
-export class SquareAlreadyMarkedError extends Error {
+class SquareAlreadyMarkedError extends Error {
   constructor(square) {
     super(`${square} is already marked`)
   }
 }
 
 
-export default class TicTacToe {
+class TicTacToe {
   constructor() {
     this.squares = {
       a1: { mark: '', moveState: null },
@@ -123,3 +123,5 @@ export default class TicTacToe {
     return synopsis
   }
 }
+
+module.exports = { TicTacToe, GameOverError, SquareAlreadyMarkedError, outcomes, players }
