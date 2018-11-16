@@ -54,6 +54,8 @@ resources:
       Properties:
         AccessControl: Private
         BucketName: ${self:custom.resourcePrefix}
+        VersioningConfiguration:
+          Status: Enabled
     IncomingCommandsTopic:
       Type: AWS::SNS::Topic
       Properties:
