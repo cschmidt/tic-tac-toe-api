@@ -24,30 +24,38 @@ You post commands as JSON. Examples include:
 
     {
       "session_id": "[session_id]",
-      "start_game": {}
+      "commands": [
+        "start_game"
+      ]
     }
 
     {
       "session_id": "[session_id]",
-      "join_game": {
-        "game_id": "[game_id]"
-      }
+      "commands": [
+        "join_game": {
+          "game_id": "[game_id]"
+        }
+      ]
     }
 
     {
       "session_id": "[session_id]",
-      "make_move": {
-        game_id: "[game_id]",
-        number: 1,
-        mark: "X"
-      }
+      "commands": [
+        "make_move": {
+          "game_id": "[game_id]",
+          "move_number": 1,
+          "mark": "X"
+        }
+      ]
     }
 
     {
       "session_id": "[session_id]",
-      "list_games": {
-        "some_kind_of_pagination_info": ""
-      }
+      "commands": [
+        "list_games": {
+          "some_kind_of_pagination_info": ""
+        }
+      ]
     }
 
 TODO: define how multiple commands per dispatch could work
