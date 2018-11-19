@@ -21,9 +21,12 @@ class CommandProcessor {
     let events = []
     for (let command of commands) {
       let handler = this.handlerFor(command)
-
-      handler(command, events)
-      console.log('handler', handler, '\ncommand', command, '\nevents', events)
+      let commandName = Object.keys(command)[0]
+      // strip out the command name from the params we hand to the command
+      // itself
+      let params = command[commandName]
+      handler(params, events)
+      console.log('command', command, '\nevents', events)
     }
     for (let event of events) {
       await this.submitEvent(event)
@@ -38,8 +41,7 @@ class CommandProcessor {
   async submitEvent(event) {
     let messageParams = {
       Message: JSON.stringify(event),
-      // TopicArn: process.env.EVENTS_TOPIC_ARN
-      TopicArn: 'arn:aws:sns:us-west-2:745313119890:tic-tac-toe-api-dev-events'
+      TopicArn: process.env.EVENTS_TOPIC_ARN
     }
     let response = await this.snsClient.publish(messageParams).promise()
     console.log('submitting event', messageParams, '\nresponse', response)
