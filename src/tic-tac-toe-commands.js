@@ -15,6 +15,7 @@ const start_game = (params, events) => {
     Key: `games/${gameId}`,
     Body: JSON.stringify(ticTacToe)
   }
+  events.push({ game_started: Object.assign({}, ticTacToe) })
   // FIXME: maybe do a uniqueness check? We're using an id generation mechanism
   // that we expect will avoid collisions, however, it's not impossible. Also,
   // here's an interesting area to add some smarts. We want user-exposed ids to
