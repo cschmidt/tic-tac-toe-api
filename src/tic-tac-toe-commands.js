@@ -2,6 +2,8 @@ const { TicTacToe } = require('./tic-tac-toe')
 const nanoid_en = require('nanoid-good/locale/en')
 const nanoid = require('nanoid-good')(nanoid_en)
 const s3 = require('aws-sdk/clients/s3')
+const { CommandProcessor } = require('./command-processor')
+
 
 const start_game = async(params, events) => {
   let ticTacToe = new TicTacToe()
@@ -24,4 +26,8 @@ const start_game = async(params, events) => {
   return s3Client.putObject(gameFileParams).promise()
 }
 
-module.exports = { start_game }
+
+let commandProcessor = new CommandProcessor()
+commandProcessor.addCommandHandler('start_game', start_game)
+
+module.exports = { commandProcessor }
