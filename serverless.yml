@@ -40,7 +40,7 @@ functions:
     events:
       - http: 'POST /commands'
   CommandProcessor:
-    handler: src/command-processor.handler
+    handler: src/tic-tac-toe-command-processor.handler
     events:
       - sqs:
          arn:
