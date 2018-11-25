@@ -25,7 +25,7 @@ class CommandProcessor {
       // strip out the command name from the params we hand to the command
       // itself
       let params = command[commandName]
-      handler(params, events)
+      await handler(params, events)
       console.log('command', command, '\nevents', events)
     }
     for (let event of events) {
@@ -43,8 +43,7 @@ class CommandProcessor {
       Message: JSON.stringify(event),
       TopicArn: process.env.EVENTS_TOPIC_ARN
     }
-    let response = await this.snsClient.publish(messageParams).promise()
-    console.log('submitting event', messageParams, '\nresponse', response)
+    return this.snsClient.publish(messageParams).promise()
   }
 }
 
