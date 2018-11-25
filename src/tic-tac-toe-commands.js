@@ -3,7 +3,7 @@ const nanoid_en = require('nanoid-good/locale/en')
 const nanoid = require('nanoid-good')(nanoid_en)
 const s3 = require('aws-sdk/clients/s3')
 
-const start_game = (params, events) => {
+const start_game = async(params, events) => {
   let ticTacToe = new TicTacToe()
   let gameId = nanoid()
   ticTacToe.id = gameId
@@ -21,7 +21,7 @@ const start_game = (params, events) => {
   // here's an interesting area to add some smarts. We want user-exposed ids to
   // be concise, so could we start with a small-ish number of bits, and then
   // expand that as necessary?
-  return s3Client.putObject(gameFileParams)
+  return s3Client.putObject(gameFileParams).promise()
 }
 
 module.exports = { start_game }
