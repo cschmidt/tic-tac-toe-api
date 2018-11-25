@@ -62,6 +62,14 @@ TODO: define how multiple commands per dispatch could work
 
 
 ## Events
+    {
+      "session_id": "[session_id]"
+      "events": [
+        "game_started": {
+
+        }
+      ]
+    }
 
 ### game_started
 
