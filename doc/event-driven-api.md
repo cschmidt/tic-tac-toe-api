@@ -44,6 +44,7 @@ You post commands as JSON. Examples include:
         "make_move": {
           "game_id": "[game_id]",
           "move_number": 1,
+          "square": "a1",
           "mark": "X"
         }
       ]
@@ -75,9 +76,33 @@ TODO: define how multiple commands per dispatch could work
 
 ### move_made
 
+    {
+      "session_id": "[session_id]",
+      "events": [
+        "move_made": {
+          "game_id": "[game_id]",
+          "square": "[square]",
+          "move_number": "[move_number]",
+          "mark": "X"
+        }
+      ]
+    }
+
 ### player_joined
 
 ### game_over
+
+    {
+      "session_id": "[session_id]",
+      "events": [
+        "game_over": [
+          "game_id": "game",
+          "outcome": "",
+          "winningLine": "",
+          "player": ""
+        ]
+      ]
+    }
 
 ### ?
 Gets the state of a particular game
