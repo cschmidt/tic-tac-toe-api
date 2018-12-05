@@ -1,33 +1,24 @@
-const { TicTacToe } = require('./tic-tac-toe')
-const nanoid_en = require('nanoid-good/locale/en')
-const nanoid = require('nanoid-good')(nanoid_en)
-const s3 = require('aws-sdk/clients/s3')
 const { CommandProcessor } = require('./command-processor')
+const { TicTacToeStore } = require('./tic-tac-toe-store')
+const bucket = process.env.RESOURCE_PREFIX
+const tts = new TicTacToeStore(bucket)
 
 
-const start_game = async(params, events) => {
-  let ticTacToe = new TicTacToe()
-  let gameId = nanoid()
-  ticTacToe.id = gameId
-  // create a new game record in S3
-  let s3Client = new s3()
-  let gameFileParams = {
-    ACL: 'authenticated-read',
-    Bucket: process.env.RESOURCE_PREFIX,
-    Key: `games/${gameId}`,
-    Body: JSON.stringify(ticTacToe)
-  }
+const startGame = async(params, events) => {
+  let ticTacToe = tts.create()
   events.push({ game_started: Object.assign({}, ticTacToe) })
-  // FIXME: maybe do a uniqueness check? We're using an id generation mechanism
-  // that we expect will avoid collisions, however, it's not impossible. Also,
-  // here's an interesting area to add some smarts. We want user-exposed ids to
-  // be concise, so could we start with a small-ish number of bits, and then
-  // expand that as necessary?
-  return s3Client.putObject(gameFileParams).promise()
+}
+
+
+const makeMove = async(params, events) => {
+  let ticTacToe = await tts.read(params.game_id)
+  ticTacToe.mark(params.square)
+  events.push({ move_made: {} })
 }
 
 
 let commandProcessor = new CommandProcessor()
-commandProcessor.addCommandHandler('start_game', start_game)
+commandProcessor.addCommandHandler('start_game', startGame)
+commandProcessor.addCommandHandler('make_move', makeMove)
 
 module.exports = { commandProcessor }
