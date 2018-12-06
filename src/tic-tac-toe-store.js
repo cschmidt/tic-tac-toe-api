@@ -13,12 +13,6 @@ class TicTacToeStore {
   async create() {
     const game = new TicTacToe()
     game.id = nanoid()
-    const s3Params = {
-      ACL: 'authenticated-read',
-      Bucket: this.bucket,
-      Key: this.key(game.id),
-      Body: JSON.stringify(game)
-    }
     // TODO: maybe do a uniqueness check? We're using an id generation mechanism
     // that we expect will avoid collisions, however, it's not impossible. Also,
     // here's an interesting area to add some smarts. We want user-exposed ids to
@@ -26,7 +20,7 @@ class TicTacToeStore {
     // expand that as necessary?
 
     await this.s3
-      .putObject(s3Params)
+      .putObject(this.s3ParamsFor(game))
       .promise()
     return game
   }
@@ -42,8 +36,24 @@ class TicTacToeStore {
     return Object.assign(new TicTacToe(), JSON.parse(s3Object.Body))
   }
 
+  async update(game) {
+    await this.s3
+      .putObject(this.s3ParamsFor(game))
+      .promise()
+    return game
+  }
+
   key(id) {
     return `games/${id}`
+  }
+
+  s3ParamsFor(game) {
+    return {
+      ACL: 'authenticated-read',
+      Bucket: this.bucket,
+      Key: this.key(game.id),
+      Body: JSON.stringify(game)
+    }
   }
 }
 

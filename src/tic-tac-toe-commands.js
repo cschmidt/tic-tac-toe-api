@@ -11,9 +11,20 @@ const startGame = async(params, events) => {
 
 
 const makeMove = async(params, events) => {
+  // TODO: validate required params: game_id, square, move_number, mark
   let ticTacToe = await tts.read(params.game_id)
   ticTacToe.mark(params.square)
-  events.push({ move_made: {} })
+  tts.update(ticTacToe)
+  // TODO: validate move number makes sense
+  events.push({
+    move_made: {
+      game_id: ticTacToe.id,
+      square: params.square,
+      move_number: '?',
+      mark: params.mark
+    }
+  })
+  // TODO: send a game_over event if the game is done
 }
 
 

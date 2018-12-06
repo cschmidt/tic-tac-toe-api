@@ -15,3 +15,5 @@ const logGame = async function(gameId) {
 for (let id of gameIds) {
   logGame(id)
 }
+
+// logGame('missing')
