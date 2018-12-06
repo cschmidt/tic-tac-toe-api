@@ -13,10 +13,11 @@
     "aws-sdk": "^2.371.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "merge": ">=1.2.1",
     "nanoid-good": "^1.3.0",
+    "serverless": "^1.34.1",
     "serverless-http": "^1.8.0",
-    "uuid": "^3.3.2",
-    "merge": ">=1.2.1"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "jest": "^23.6.0",
