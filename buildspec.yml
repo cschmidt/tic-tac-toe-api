@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Started install phase...
+      - apt-get update -y
+  build:
+    commands:
+      - echo Started build phase...
+      - npm install
+      - npm install -g serverless
+      - npm test -- --coverage
+      - serverless deploy
+  post_build:
+    commands:
+      - echo Build completed.
