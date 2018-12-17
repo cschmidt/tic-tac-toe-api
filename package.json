@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "repository": "github:cschmidt/tic-tac-toe-api",
   "scripts": {
     "test": "jest-run --env=node"
   },
