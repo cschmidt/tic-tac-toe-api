@@ -11,7 +11,8 @@ phases:
       - npm install
       - npm install -g serverless
       - npm test -- --coverage
-      - serverless deploy
+      - serverless -version
+      - serverless deploy --verbose
   post_build:
     commands:
       - echo Build completed.
