@@ -79,6 +79,7 @@ class TicTacToe {
         (this.turn === players.X ? players.O : players.X) : this.turn
     }
     this.synopsis = this.produceSynopsis()
+    return this
   }
 
   determineOutcome() {
