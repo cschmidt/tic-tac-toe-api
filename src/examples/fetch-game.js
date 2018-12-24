@@ -1,6 +1,6 @@
 'use strict'
 
-const { TicTacToeStore } = require('./tic-tac-toe-store')
+const { TicTacToeStore } = require('../tic-tac-toe-store')
 const tts = new TicTacToeStore('tic-tac-toe-api-dev')
 const gameId = '3NHsUhW48SlBB95FmQ-3R'
 const gameIds = [

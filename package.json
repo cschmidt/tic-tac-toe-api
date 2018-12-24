@@ -24,9 +24,5 @@
     "jest": "^23.6.0",
     "jest-run": "^1.0.0"
   },
-  "jest": {
-    "testMatch": [
-      "**/test/**/*.js?(x)"
-    ]
-  }
+  "jest": {}
 }

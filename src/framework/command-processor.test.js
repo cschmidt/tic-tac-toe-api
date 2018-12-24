@@ -1,6 +1,6 @@
 'use strict'
 /* global jest beforeEach it expect */
-import { CommandProcessor } from '../src/command-processor'
+import { CommandProcessor } from './command-processor'
 
 let commandProcessor = {}
 

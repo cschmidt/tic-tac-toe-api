@@ -1,4 +1,4 @@
-const { CommandProcessor } = require('./command-processor')
+const { CommandProcessor } = require('./framework/command-processor')
 const { TicTacToeStore } = require('./tic-tac-toe-store')
 const bucket = process.env.RESOURCE_PREFIX
 const tts = new TicTacToeStore(bucket)

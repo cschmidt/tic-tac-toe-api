@@ -1,6 +1,6 @@
 'use strict'
 /* global jest beforeEach it expect */
-import { TicTacToe, outcomes, SquareAlreadyMarkedError, GameOverError } from '../src/tic-tac-toe'
+import { TicTacToe, outcomes, SquareAlreadyMarkedError, GameOverError } from './tic-tac-toe'
 
 let ticTacToe = {}
 
