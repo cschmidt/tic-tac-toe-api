@@ -5,7 +5,7 @@ const tts = new TicTacToeStore(bucket)
 
 
 const startGame = async(params, events) => {
-  let ticTacToe = tts.create()
+  let ticTacToe = await tts.create()
   events.push({ game_started: Object.assign({}, ticTacToe) })
 }
 
