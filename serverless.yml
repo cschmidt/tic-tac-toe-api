@@ -35,11 +35,7 @@ functions:
     events:
       - http: 'GET /sample'
   Sessions:
-    handler: src/framework/sessions.handler
-    events:
-      - http: 'POST /sessions'
-  WebsocketSessions:
-    handler: src/framework/session-manager-ws.handler
+    handler: src/framework/session-manager.handler
     events:
       - websocket:
           routeKey: $connect
@@ -48,7 +44,6 @@ functions:
   CommandReceiver:
     handler: src/framework/command-receiver.handler
     events:
-      - http: 'POST /commands'
       - websocket:
           routeKey: $default
   CommandProcessor:

@@ -1,9 +1,5 @@
 'use strict'
-const serverless = require('serverless-http')
-const express = require('express')
-const commandReceiver = express()
 const sns = require('aws-sdk/clients/sns')
-const bodyParser = require('body-parser')
 const { SessionManager } = require('./session-manager')
 
 if (!process.env.RESOURCE_PREFIX) {
@@ -35,18 +31,17 @@ async function submitCommand(command) {
   return snsClient.publish(messageParams).promise()
 }
 
-commandReceiver.use(bodyParser.json())
 
-commandReceiver.post('*', async function(req, res) {
-  try {
-    let command = await validateCommand(req.body)
-    let snsResponse = await submitCommand(command)
-    res.json(snsResponse)
-  }
-  catch (err) {
-    res.status(500).send('Error')
-    console.log('req', req, 'err', err)
-  }
-})
+async function handler(event, context) {
+  const rawCommand = JSON.parse(event.body)
+  rawCommand.session_id = event.requestContext.connectionId
+  console.log('command', rawCommand)
+  const command = await validateCommand(rawCommand)
+  // FIXME: error handling
+  await submitCommand(command)
+  return { statusCode: 200, body: 'OK' }
+}
 
-module.exports.handler = serverless(commandReceiver)
+module.exports = {
+  handler
+}

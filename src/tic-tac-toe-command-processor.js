@@ -12,5 +12,10 @@ module.exports.handler = async function(event, context) {
     }
   }
   console.log('commands', commands)
-  return commandProcessor.handle(commands)
+  try {
+    return await commandProcessor.handle(commands)
+  }
+  catch (err) {
+    console.log('err', err)
+  }
 }

@@ -2,6 +2,9 @@
 const uuid = require('uuid/v1')
 const s3 = require('aws-sdk/clients/s3')
 
+const success = {
+  statusCode: 200
+}
 
 class SessionManager {
   constructor(systemName) {
@@ -48,4 +51,30 @@ class SessionManager {
   }
 }
 
-module.exports = { SessionManager }
+if (!process.env.RESOURCE_PREFIX) {
+  throw new Error('Service not configured')
+}
+
+const sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
+
+async function handler(event, context) {
+  try {
+    if (event.requestContext.eventType === 'CONNECT') {
+      await sessionManager.createSession(event.requestContext.connectionId)
+    }
+    else if (event.requestContext.eventType === 'DISCONNECT') {
+      await sessionManager.deleteSession(event.requestContext.connectionId)
+    }
+    return success
+  }
+  catch (err) {
+    // FIXME: error handling
+    console.log('err', err)
+  }
+}
+
+
+module.exports = {
+  handler,
+  SessionManager
+}
