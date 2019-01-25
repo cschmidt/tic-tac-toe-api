@@ -11,6 +11,7 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
   region: us-west-2
+  websocketApiName: ${self:service}-${self:provider.stage}
   iamRoleStatements:
    - Effect: "Allow"
      Action: "s3:*"
@@ -22,12 +23,23 @@ provider:
    - Effect: "Allow"
      Action: "sns:Publish"
      Resource: "arn:aws:sns:*:*:*"
+   - Effect: "Allow"
+     Action: "execute-api:ManageConnections"
+     Resource: "arn:aws:execute-api:*:*:**/@connections/*"
+   - Effect: "Allow"
+     Action: "apigateway:GET"
+     Resource: "arn:aws:apigateway:*:*:**/apis"
   environment:
     RESOURCE_PREFIX: ${self:custom.resourcePrefix}
     INCOMING_COMMANDS_TOPIC_ARN:
       Ref: IncomingCommandsTopic
     EVENTS_TOPIC_ARN:
       Ref: EventsTopic
+    # API_NAME is really only needed to allow EventDispatcher to find the
+    # websocket API endpoint URL. If we could get this from
+    # serverless-websockets-plugin (or elsewhere) this could be removed
+    API_NAME: ${self:provider.websocketApiName}
+
 
 functions:
   Sample:
@@ -52,6 +64,12 @@ functions:
       - sqs:
          arn:
            "Fn::GetAtt": [ CommandDispatchQueue, Arn ]
+  EventDispatch:
+    handler: src/framework/event-dispatcher.handler
+    events:
+      - sqs:
+         arn:
+           "Fn::GetAtt": [ EventDispatchQueue, Arn ]
 
 
 resources:
@@ -75,6 +93,10 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: ${self:custom.resourcePrefix}-events
+        Subscription:
+        - Endpoint:
+            "Fn::GetAtt": [ EventDispatchQueue, Arn ]
+          Protocol: sqs
     CommandDispatchQueue:
       Type: AWS::SQS::Queue
       Properties:
@@ -103,3 +125,29 @@ resources:
               ArnEquals:
                 aws:SourceArn:
                   Ref: IncomingCommandsTopic
+    EventDispatchQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.resourcePrefix}-event-dispatch
+        ReceiveMessageWaitTimeSeconds: 20
+    EventDispatchQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+        - Ref: EventDispatchQueue
+        PolicyDocument:
+          Id: EventDispatchQueuePolicy
+          Version: '2012-10-17'
+          Statement:
+          - Sid: Allow-OutgoingEventsTopic-Send-To-EventDispatchQueue
+            Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+            - sqs:SendMessage
+            Resource:
+              "Fn::GetAtt": [EventDispatchQueue, Arn]
+            Condition:
+              ArnEquals:
+                aws:SourceArn:
+                  Ref: EventsTopic
