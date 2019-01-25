@@ -1,0 +1,51 @@
+{
+  requestContext: {
+    routeKey: '$default',
+    authorizer: '',
+    messageId: 'UCmQPdyCvHcCEXQ=',
+    integrationLatency: '',
+    eventType: 'MESSAGE',
+    error: '',
+    extendedRequestId: 'UCmQPH8DPHcFQiQ=',
+    requestTime: '25/Jan/2019:03:35:29 +0000',
+    messageDirection: 'IN',
+    stage: 'dev',
+    connectedAt: 1548387302602,
+    requestTimeEpoch: 1548387329561,
+    identity: {
+      cognitoIdentityPoolId: null,
+      accountId: null,
+      cognitoIdentityId: null,
+      caller: null,
+      sourceIp: '54.245.63.217',
+      accessKey: null,
+      cognitoAuthenticationType: null,
+      cognitoAuthenticationProvider: null,
+      userArn: null,
+      userAgent: null,
+      user: null
+    },
+    requestId: 'UCmQPH8DPHcFQiQ=',
+    domainName: '88rl4dztqd.execute-api.us-west-2.amazonaws.com',
+    connectionId: 'UCmMCdxZvHcCEXQ=',
+    apiId: '88rl4dztqd',
+    status: ''
+  },
+  body: 'hey',
+  isBase64Encoded: false
+}
+context {
+  callbackWaitsForEmptyEventLoop: [Getter / Setter],
+  done: [Function: done],
+  succeed: [Function: succeed],
+  fail: [Function: fail],
+  logGroupName: '/aws/lambda/tic-tac-toe-api-dev-CommandReceiver',
+  logStreamName: '2019/01/25/[41]f55c4d95dfb84912ac03657b09ae203e',
+  functionName: 'tic-tac-toe-api-dev-CommandReceiver',
+  memoryLimitInMB: '1024',
+  functionVersion: '41',
+  getRemainingTimeInMillis: [Function: getRemainingTimeInMillis],
+  invokeid: 'c95ee91f-4a74-439b-b635-5262a0079ba7',
+  awsRequestId: 'c95ee91f-4a74-439b-b635-5262a0079ba7',
+  invokedFunctionArn: 'arn:aws:lambda:us-west-2:745313119890:function:tic-tac-toe-api-dev-CommandReceiver:41'
+}

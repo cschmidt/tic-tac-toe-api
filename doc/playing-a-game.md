@@ -28,3 +28,8 @@
       --request POST \
       --data '{"session_id":"4740dce0-dbef-11e8-814f-2b9b58b1ff04", "commands":[{"make_move": {"game_id": "3NHsUhW48SlBB95FmQ-3R", "square": "c3", "mark": "X", "move_number": 3}}]}' \
       https://u6d07hxpr6.execute-api.us-west-2.amazonaws.com/dev/commands
+
+
+{"commands":[{"make_move": {"game_id": "3NHsUhW48SlBB95FmQ-3R", "square": "c3", "mark": "X", "move_number": 3}}]}
+
+{"commands":[{"make_move": {"game_id": "3NHsUhW48SlBB95FmQ-3R", "square": "c1", "mark": "O", "move_number": 4}}]}
