@@ -1,20 +1,17 @@
 'use strict'
 const uuid = require('uuid/v1')
-const sqs = require('aws-sdk/clients/sqs')
 const s3 = require('aws-sdk/clients/s3')
 
 
 class SessionManager {
   constructor(systemName) {
     this.systemName = systemName
-    this.sqsClient = new sqs()
     this.s3Client = new s3()
   }
 
   async createSession(sessionId = uuid()) {
     console.log('createSession', sessionId)
-    let queueResponse = await this.createSessionQueue(sessionId)
-    let session = { sessionId, queueUrl: queueResponse.QueueUrl }
+    let session = { sessionId }
     await this.createSessionFile(session)
     return session
   }
@@ -40,16 +37,6 @@ class SessionManager {
       Key: `sessions/${sessionId}`
     }
     return this.s3Client.deleteObject(sessionFileParams).promise()
-  }
-
-  async createSessionQueue(sessionId) {
-    let sessionQueueInfo = {
-      QueueName: `${this.systemName}-${sessionId}`,
-      Attributes: {
-        ReceiveMessageWaitTimeSeconds: '20'
-      }
-    }
-    return this.sqsClient.createQueue(sessionQueueInfo).promise()
   }
 
   async fetchSessionMeta(sessionId) {
