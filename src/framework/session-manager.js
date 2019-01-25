@@ -11,12 +11,17 @@ class SessionManager {
     this.s3Client = new s3()
   }
 
-  async createSession() {
-    let sessionId = uuid()
+  async createSession(sessionId = uuid()) {
+    console.log('createSession', sessionId)
     let queueResponse = await this.createSessionQueue(sessionId)
     let session = { sessionId, queueUrl: queueResponse.QueueUrl }
     await this.createSessionFile(session)
     return session
+  }
+
+  async deleteSession(sessionId) {
+    console.log('deleteSession', sessionId)
+    await this.deleteSessionFile(sessionId)
   }
 
   async createSessionFile(session) {
@@ -27,6 +32,14 @@ class SessionManager {
       Body: JSON.stringify(session)
     }
     return this.s3Client.putObject(sessionFileParams).promise()
+  }
+
+  async deleteSessionFile(sessionId) {
+    let sessionFileParams = {
+      Bucket: this.systemName,
+      Key: `sessions/${sessionId}`
+    }
+    return this.s3Client.deleteObject(sessionFileParams).promise()
   }
 
   async createSessionQueue(sessionId) {
