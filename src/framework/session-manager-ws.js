@@ -16,10 +16,10 @@ async function handler(event, context) {
   // console.log('event\n', event, '\ncontext\n', context)
   try {
     if (event.requestContext.eventType === 'CONNECT') {
-      await sessionManager.createSession(event.requestContext.channelId)
+      await sessionManager.createSession(event.requestContext.connectionId)
     }
     else if (event.requestContext.eventType === 'DISCONNECT') {
-      await sessionManager.deleteSession(event.requestContext.channelId)
+      await sessionManager.deleteSession(event.requestContext.connectionId)
     }
     // res.json(session)
     return success
