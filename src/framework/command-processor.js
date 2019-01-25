@@ -28,9 +28,11 @@ class CommandProcessor {
       await handler(params, events)
       console.log('command', command, '\nevents', events)
     }
-    for (let event of events) {
-      await this.submitEvent(event)
+    const eventMessage = {
+      session_id: commands.session_id,
+      events
     }
+    await this.submitEvent(eventMessage)
   }
 
   handlerFor(command) {
