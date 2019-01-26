@@ -1,30 +1,54 @@
 const { CommandProcessor } = require('./framework/command-processor')
 const { TicTacToeStore } = require('./tic-tac-toe-store')
+const { outcomes } = require('./tic-tac-toe')
 const bucket = process.env.RESOURCE_PREFIX
 const tts = new TicTacToeStore(bucket)
 
 
+const moveMadeEvent = (game, params) => {
+  return {
+    move_made: {
+      game_id: game.id,
+      square: params.square,
+      move_number: '?',
+      mark: params.mark
+    }
+  }
+}
+
+const gameOverEvent = (game) => {
+  return {
+    game_over: {
+      game_id: game.id,
+      outcome: game.outcome,
+      winningLine: game.winningLine,
+      winner: game.turn
+    }
+  }
+}
+
+const gameStartedEvent = (game) => {
+  return {
+    game_started: Object.assign({}, game)
+  }
+}
+
 const startGame = async(params, events) => {
-  let ticTacToe = await tts.create()
-  events.push({ game_started: Object.assign({}, ticTacToe) })
+  let game = await tts.create()
+  events.push(gameStartedEvent(game))
 }
 
 
 const makeMove = async(params, events) => {
   // TODO: validate required params: game_id, square, move_number, mark
-  let ticTacToe = await tts.read(params.game_id)
-  ticTacToe.mark(params.square)
-  tts.update(ticTacToe)
+  let game = await tts.read(params.game_id)
+  game.mark(params.square)
+  tts.update(game)
   // TODO: validate move number makes sense
-  events.push({
-    move_made: {
-      game_id: ticTacToe.id,
-      square: params.square,
-      move_number: '?',
-      mark: params.mark
-    }
-  })
-  // TODO: send a game_over event if the game is done
+  events.push(moveMadeEvent(game, params))
+  if (game.outcome !== outcomes.UNKNOWN) {
+    events.push(gameOverEvent(game))
+  }
 }
 
 
