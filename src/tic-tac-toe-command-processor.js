@@ -7,10 +7,16 @@ module.exports.handler = async function(event, context) {
   for (let record of event.Records) {
     let parsedRecord = JSON.parse(record.body)
     let parsedMessage = JSON.parse(parsedRecord.Message)
+    commands.session_id = parsedMessage.session_id
     for (let command of parsedMessage.commands) {
       commands.push(command)
     }
   }
   console.log('commands', commands)
-  return commandProcessor.handle(commands)
+  try {
+    return await commandProcessor.handle(commands)
+  }
+  catch (err) {
+    console.log('err', err)
+  }
 }

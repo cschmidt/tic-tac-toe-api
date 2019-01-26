@@ -1,22 +1,27 @@
 'use strict'
 const uuid = require('uuid/v1')
-const sqs = require('aws-sdk/clients/sqs')
 const s3 = require('aws-sdk/clients/s3')
 
+const success = {
+  statusCode: 200
+}
 
 class SessionManager {
   constructor(systemName) {
     this.systemName = systemName
-    this.sqsClient = new sqs()
     this.s3Client = new s3()
   }
 
-  async createSession() {
-    let sessionId = uuid()
-    let queueResponse = await this.createSessionQueue(sessionId)
-    let session = { sessionId, queueUrl: queueResponse.QueueUrl }
+  async createSession(sessionId = uuid()) {
+    console.log('createSession', sessionId)
+    let session = { sessionId }
     await this.createSessionFile(session)
     return session
+  }
+
+  async deleteSession(sessionId) {
+    console.log('deleteSession', sessionId)
+    await this.deleteSessionFile(sessionId)
   }
 
   async createSessionFile(session) {
@@ -29,14 +34,12 @@ class SessionManager {
     return this.s3Client.putObject(sessionFileParams).promise()
   }
 
-  async createSessionQueue(sessionId) {
-    let sessionQueueInfo = {
-      QueueName: `${this.systemName}-${sessionId}`,
-      Attributes: {
-        ReceiveMessageWaitTimeSeconds: '20'
-      }
+  async deleteSessionFile(sessionId) {
+    let sessionFileParams = {
+      Bucket: this.systemName,
+      Key: `sessions/${sessionId}`
     }
-    return this.sqsClient.createQueue(sessionQueueInfo).promise()
+    return this.s3Client.deleteObject(sessionFileParams).promise()
   }
 
   async fetchSessionMeta(sessionId) {
@@ -48,4 +51,30 @@ class SessionManager {
   }
 }
 
-module.exports = { SessionManager }
+if (!process.env.RESOURCE_PREFIX) {
+  throw new Error('Service not configured')
+}
+
+const sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
+
+async function handler(event, context) {
+  try {
+    if (event.requestContext.eventType === 'CONNECT') {
+      await sessionManager.createSession(event.requestContext.connectionId)
+    }
+    else if (event.requestContext.eventType === 'DISCONNECT') {
+      await sessionManager.deleteSession(event.requestContext.connectionId)
+    }
+    return success
+  }
+  catch (err) {
+    // FIXME: error handling
+    console.log('err', err)
+  }
+}
+
+
+module.exports = {
+  handler,
+  SessionManager
+}
