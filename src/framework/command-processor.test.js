@@ -58,6 +58,6 @@ it('can process a command', async() => {
   await commandProcessor.handle(commandMessage.commands)
 
   expect(mockPublish.mock.calls.length).toEqual(1)
-  let expectedPublishParams = { Message: '{"speed_increased":100}', TopicArn: 'myTopicArn' }
+  let expectedPublishParams = { Message: '{"events":[{"speed_increased":100}]}', TopicArn: 'myTopicArn' }
   expect(mockPublish.mock.calls[0][0]).toEqual(expectedPublishParams)
 })
