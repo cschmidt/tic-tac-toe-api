@@ -17,6 +17,16 @@ class CommandProcessor {
     this.commandHandlers[commandType] = handler
   }
 
+  errorEvent(error) {
+    return {
+      error: {
+        ...error,
+        message: error.message,
+        name: error.name
+      }
+    }
+  }
+
   async handle(commands) {
     let events = []
     for (let command of commands) {
@@ -25,7 +35,12 @@ class CommandProcessor {
       // strip out the command name from the params we hand to the command
       // itself
       let params = command[commandName]
-      await handler(params, events)
+      try {
+        await handler(params, events)
+      }
+      catch (error) {
+        events.push(this.errorEvent(error))
+      }
       console.log('command', command, '\nevents', events)
     }
     const eventMessage = {

@@ -5,17 +5,6 @@ const bucket = process.env.RESOURCE_PREFIX
 const tts = new TicTacToeStore(bucket)
 
 
-const moveMadeEvent = (game, params) => {
-  return {
-    move_made: {
-      game_id: game.id,
-      square: params.square,
-      move_number: '?',
-      mark: params.mark
-    }
-  }
-}
-
 const gameOverEvent = (game) => {
   return {
     game_over: {
@@ -33,6 +22,17 @@ const gameStartedEvent = (game) => {
   }
 }
 
+const moveMadeEvent = (game, params) => {
+  return {
+    move_made: {
+      game_id: game.id,
+      square: params.square,
+      move_number: '?',
+      mark: params.mark
+    }
+  }
+}
+
 const startGame = async(params, events) => {
   let game = await tts.create()
   events.push(gameStartedEvent(game))
@@ -43,8 +43,9 @@ const makeMove = async(params, events) => {
   // TODO: validate required params: game_id, square, move_number, mark
   let game = await tts.read(params.game_id)
   game.mark(params.square)
-  tts.update(game)
-  // TODO: validate move number makes sense
+  await tts.update(game)
+  // TODO: validate move number makes sense (could this be better implemented as
+  // a horizontal concern? update versioning?)
   events.push(moveMadeEvent(game, params))
   if (game.outcome !== outcomes.UNKNOWN) {
     events.push(gameOverEvent(game))
