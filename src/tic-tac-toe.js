@@ -28,14 +28,19 @@ const lines = [
 // Errors
 
 class GameOverError extends Error {
-  constructor() {
+  constructor(gameId) {
     super('Game Over!')
+    this.name = 'GameOverError'
+    this.gameId = gameId
   }
 }
 
 class SquareAlreadyMarkedError extends Error {
-  constructor(square) {
+  constructor(gameId, square) {
     super(`${square} is already marked`)
+    this.name = 'SquareAlreadyMarkedError'
+    this.gameId = gameId
+    this.square = square
   }
 }
 
@@ -65,10 +70,10 @@ class TicTacToe {
     // mark the game board if the requested square is empty and the game is
     // still in play
     if (!this.inProgress()) {
-      throw new GameOverError()
+      throw new GameOverError(this.id)
     }
     else if (!isSquareEmpty) {
-      throw new SquareAlreadyMarkedError(square)
+      throw new SquareAlreadyMarkedError(this.id, square)
     }
     else {
       this.squares[square].mark = this.turn
