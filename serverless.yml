@@ -1,8 +1,5 @@
 service: tic-tac-toe-api
 
-plugins:
-  - serverless-websockets-plugin
-
 custom:
   resourcePrefix: ${self:service}-${self:provider.stage}
 
@@ -49,15 +46,12 @@ functions:
   Sessions:
     handler: src/framework/session-manager.handler
     events:
-      - websocket:
-          routeKey: $connect
-      - websocket:
-          routeKey: $disconnect
+      - websocket: $connect
+      - websocket: $disconnect
   CommandReceiver:
     handler: src/framework/command-receiver.handler
     events:
-      - websocket:
-          routeKey: $default
+      - websocket: $default
   CommandProcessor:
     handler: src/tic-tac-toe-command-processor.handler
     events:
