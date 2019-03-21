@@ -32,7 +32,12 @@ async function handler(event, context) {
       Data: JSON.stringify(parsedMessage)
     }
     console.log('params', params)
-    await apiGatewayManagementClient.postToConnection(params).promise()
+    try {
+      await apiGatewayManagementClient.postToConnection(params).promise()
+    }
+    catch (e) {
+      console.log('error', e)
+    }
   }
 }
 

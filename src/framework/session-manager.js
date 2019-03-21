@@ -60,6 +60,7 @@ const sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
 async function handler(event, context) {
   try {
     if (event.requestContext.eventType === 'CONNECT') {
+      console.log('event.requestContext.connectionId', event.requestContext.connectionId)
       await sessionManager.createSession(event.requestContext.connectionId)
     }
     else if (event.requestContext.eventType === 'DISCONNECT') {
