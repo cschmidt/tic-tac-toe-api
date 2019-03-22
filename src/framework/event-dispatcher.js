@@ -7,22 +7,26 @@ let apiGatewayManagementClient = null
 async function getApiEndpoint(apiName) {
   const apiGatewayV2 = new ApiGatewayV2()
   const apis = await apiGatewayV2.getApis().promise()
-  const websocketApi = apis.Items.find((api) => api.Name === apiName)
-  const apiId = websocketApi ? websocketApi.ApiId : null
-  // FIXME: don't hardcode region and stage
-  const region = process.env.AWS_REGION
-  const stage = 'dev'
-  return `${apiId}.execute-api.${region}.amazonaws.com/${stage}`
+  const websocketsApi = apis.Items.find((api) => api.Name === apiName)
+  // This isn't very clean. Serverless Framework uses the stage as the first
+  // part of the API name, so we can snag the stage from there. Ideally the AWS
+  // API would provide this (it's included in the UI), but it's not present in
+  // the API response.
+  const stage = apiName.split('-')[0]
+  if (websocketsApi) {
+    return websocketsApi.ApiEndpoint.replace('wss://', 'https://') + '/' + stage
+  }
+  else {
+    throw new Error(`Couldn't find API named ${apiName}`)
+  }
 }
 
 
 async function handler(event, context) {
   if (apiGatewayManagementClient === null) {
-    console.log('initializing apiGatewayManagementClient')
-    const endpoint = await getApiEndpoint(process.env.API_NAME)
-    console.log('endpoint', endpoint)
+    const endpoint = await getApiEndpoint(process.env.WEBSOCKETS_API_NAME)
+    console.log('Initializing client for', endpoint)
     apiGatewayManagementClient = new ApiGatewayManagementApi({ endpoint })
-
   }
   for (let record of event.Records) {
     const parsedRecord = JSON.parse(record.body)
