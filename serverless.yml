@@ -8,7 +8,6 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
   region: us-west-2
-  websocketApiName: ${self:service}-${self:provider.stage}
   iamRoleStatements:
    - Effect: "Allow"
      Action: "s3:*"
@@ -21,9 +20,6 @@ provider:
      Action: "sns:Publish"
      Resource: "arn:aws:sns:*:*:*"
    - Effect: "Allow"
-     Action: "execute-api:ManageConnections"
-     Resource: "arn:aws:execute-api:*:*:**/@connections/*"
-   - Effect: "Allow"
      Action: "apigateway:GET"
      Resource: "arn:aws:apigateway:*:*:**/apis"
   environment:
@@ -32,10 +28,10 @@ provider:
       Ref: IncomingCommandsTopic
     EVENTS_TOPIC_ARN:
       Ref: EventsTopic
-    # API_NAME is really only needed to allow EventDispatcher to find the
-    # websocket API endpoint URL. If we could get this from
-    # serverless-websockets-plugin (or elsewhere) this could be removed
-    API_NAME: ${self:provider.websocketApiName}
+    # WEBSOCKETS_API_NAME is really only needed to allow EventDispatcher to find
+    # the websockets API endpoint URL. Would be great to discover something more
+    # standardized!
+    WEBSOCKETS_API_NAME: ${self:provider.stage}-${self:service}-websockets
 
 
 functions:
