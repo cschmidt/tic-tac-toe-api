@@ -28,7 +28,8 @@ const moveMadeEvent = (game, params) => {
       game_id: game.id,
       square: params.square,
       move_number: '?',
-      mark: params.mark
+      mark: params.mark,
+      turn: game.turn
     }
   }
 }
