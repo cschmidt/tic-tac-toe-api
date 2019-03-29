@@ -42,7 +42,7 @@ const startGame = async(params, events) => {
 const makeMove = async(params, events) => {
   // TODO: validate required params: game_id, square, move_number, mark
   let game = await tts.read(params.game_id)
-  game.mark(params.square)
+  game.mark(params.square, params.mark)
   await tts.update(game)
   // TODO: validate move number makes sense (could this be better implemented as
   // a horizontal concern? update versioning?)

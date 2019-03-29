@@ -1,5 +1,5 @@
 {
-  "name": "tic-tac-toe-api",
+  "name": "@schmidtdisturbr/tic-tac-toe-api",
   "version": "0.0.1",
   "description": "",
   "main": "src/index.js",

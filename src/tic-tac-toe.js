@@ -44,6 +44,16 @@ class SquareAlreadyMarkedError extends Error {
   }
 }
 
+class MoveOutOfTurnError extends Error {
+  constructor(gameId, attemptedSquare, attemptedMark, currentTurn) {
+    super(`Tried to mark ${attemptedSquare} with ${attemptedMark}, but it's ${currentTurn}'s turn`)
+    this.name = 'MoveOutOfTurnError'
+    this.gameId = gameId
+    this.attemptedSquare = attemptedSquare
+    this.attemptedMark = attemptedMark
+    this.currentTurn = currentTurn
+  }
+}
 
 class TicTacToe {
   constructor() {
@@ -64,7 +74,7 @@ class TicTacToe {
     this.synopsis = ''
   }
 
-  mark(square) {
+  mark(square, _mark) {
     let isSquareEmpty = this.squares[square] && this.squares[square].mark === ''
 
     // mark the game board if the requested square is empty and the game is
@@ -74,6 +84,9 @@ class TicTacToe {
     }
     else if (!isSquareEmpty) {
       throw new SquareAlreadyMarkedError(this.id, square)
+    }
+    else if (_mark !== this.turn) {
+      throw new MoveOutOfTurnError(this.id, square, _mark, this.turn)
     }
     else {
       this.squares[square].mark = this.turn
@@ -131,4 +144,4 @@ class TicTacToe {
   }
 }
 
-module.exports = { TicTacToe, GameOverError, SquareAlreadyMarkedError, outcomes, players }
+module.exports = { TicTacToe, GameOverError, SquareAlreadyMarkedError, MoveOutOfTurnError, outcomes, players }
