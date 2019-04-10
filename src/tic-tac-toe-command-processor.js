@@ -12,7 +12,6 @@ module.exports.handler = async function(event, context) {
       commands.push(command)
     }
   }
-  console.log('commands', commands)
   try {
     return await commandProcessor.handle(commands)
   }
