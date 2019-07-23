@@ -5,7 +5,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: ${opt:stage, 'dev'} # Set the default stage used. Default is dev
   region: us-west-2
   iamRoleStatements:
@@ -35,10 +35,6 @@ provider:
 
 
 functions:
-  Sample:
-    handler: src/sample-function.handler
-    events:
-      - http: 'GET /sample'
   Sessions:
     handler: src/framework/session-manager.handler
     events:
