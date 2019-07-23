@@ -68,9 +68,9 @@ async function handler(event, context) {
     }
     return success
   }
-  catch (err) {
+  catch (error) {
     // FIXME: error handling
-    console.log('err', err)
+    console.log({ error })
   }
 }
 

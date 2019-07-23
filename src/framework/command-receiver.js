@@ -33,12 +33,12 @@ async function submitCommand(command) {
 
 
 async function handler(event, context) {
-  const rawCommand = JSON.parse(event.body)
-  rawCommand.session_id = event.requestContext.connectionId
-  console.log('command', rawCommand)
-  const command = await validateCommand(rawCommand)
+  const command = JSON.parse(event.body)
+  command.session_id = event.requestContext.connectionId
+  console.log({ command })
+  const validatedCommand = await validateCommand(command)
   // FIXME: error handling
-  await submitCommand(command)
+  await submitCommand(validatedCommand)
   return { statusCode: 200, body: 'OK' }
 }
 

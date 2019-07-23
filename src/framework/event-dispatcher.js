@@ -35,12 +35,12 @@ async function handler(event, context) {
       ConnectionId: parsedMessage.session_id,
       Data: JSON.stringify(parsedMessage)
     }
-    console.log('params', params)
+    console.log({ params })
     try {
       await apiGatewayManagementClient.postToConnection(params).promise()
     }
-    catch (e) {
-      console.log('error', e)
+    catch (error) {
+      console.log({ error })
     }
   }
 }
