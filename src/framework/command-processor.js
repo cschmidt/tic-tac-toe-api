@@ -41,7 +41,7 @@ class CommandProcessor {
       catch (error) {
         events.push(this.errorEvent(error))
       }
-      console.log('command', command, '\nevents', events)
+      console.log({ command, events })
     }
     const eventMessage = {
       session_id: commands.session_id,
