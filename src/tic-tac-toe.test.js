@@ -1,7 +1,6 @@
 'use strict'
 /* global jest beforeEach it expect */
-import { TicTacToe, outcomes, SquareAlreadyMarkedError, GameOverError, MoveOutOfTurnError } from './tic-tac-toe'
-
+const { TicTacToe, outcomes, SquareAlreadyMarkedError, GameOverError, MoveOutOfTurnError } = require('./tic-tac-toe')
 let game = {}
 
 
