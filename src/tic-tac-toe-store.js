@@ -1,8 +1,7 @@
 'use strict'
 const S3 = require('aws-sdk/clients/s3')
 const { TicTacToe } = require('./tic-tac-toe')
-const nanoid_en = require('nanoid-good/locale/en')
-const nanoid = require('nanoid-good')(nanoid_en)
+const nanoid = require('nanoid-good/locale/en')
 
 class TicTacToeStore {
   constructor(bucket) {
