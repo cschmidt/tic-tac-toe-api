@@ -1,7 +1,8 @@
 'use strict'
 const S3 = require('aws-sdk/clients/s3')
 const { TicTacToe } = require('./tic-tac-toe')
-const nanoid = require('nanoid-good/locale/en')
+const en = require('nanoid-good/locale/en')
+const nanoid = require('nanoid-good').nanoid(en)
 
 class TicTacToeStore {
   constructor(bucket) {
@@ -11,7 +12,7 @@ class TicTacToeStore {
 
   async create() {
     const game = new TicTacToe()
-    game.id = nanoid()
+    game.id = newGameId()
     // TODO: maybe do a uniqueness check? We're using an id generation mechanism
     // that we expect will avoid collisions, however, it's not impossible. Also,
     // here's an interesting area to add some smarts. We want user-exposed ids to
@@ -44,6 +45,10 @@ class TicTacToeStore {
 
   key(id) {
     return `games/${id}`
+  }
+
+  newGameId() {
+    return nanoid()
   }
 
   s3ParamsFor(game) {
