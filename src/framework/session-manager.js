@@ -51,14 +51,22 @@ class SessionManager {
   }
 }
 
-if (!process.env.RESOURCE_PREFIX) {
-  throw new Error('Service not configured')
+
+let sessionManager;
+
+function initSessionManager() {
+  if (!process.env.RESOURCE_PREFIX) {
+    throw new Error('Service not configured (RESOURCE_PREFIX not set in environment)')
+  }
+  if (!sessionManager) {      
+    sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
+  }
 }
 
-const sessionManager = new SessionManager(process.env.RESOURCE_PREFIX)
 
 async function handler(event, context) {
   try {
+    initSessionManager()
     if (event.requestContext.eventType === 'CONNECT') {
       console.log('event.requestContext.connectionId', event.requestContext.connectionId)
       await sessionManager.createSession(event.requestContext.connectionId)
