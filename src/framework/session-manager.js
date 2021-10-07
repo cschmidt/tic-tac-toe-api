@@ -1,5 +1,5 @@
 'use strict'
-const uuid = require('uuid/v1')
+const { v1:uuid } = require('uuid')
 const s3 = require('aws-sdk/clients/s3')
 
 const success = {
