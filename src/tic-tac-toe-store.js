@@ -12,7 +12,7 @@ class TicTacToeStore {
 
   async create() {
     const game = new TicTacToe()
-    game.id = newGameId()
+    game.id = this.newGameId()
     // TODO: maybe do a uniqueness check? We're using an id generation mechanism
     // that we expect will avoid collisions, however, it's not impossible. Also,
     // here's an interesting area to add some smarts. We want user-exposed ids to
