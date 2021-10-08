@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Started install phase...
       - apt-get update -y
+      - npm -v
   build:
     commands:
       - echo Started build phase...
